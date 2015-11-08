@@ -91,7 +91,7 @@ public class Reader {
 
 			// for new data, choose random part of sentence to split on and copy all data up until split
 			int numWords = origSentence.size();
-			int randSplit = rand.nextInt(numWords);
+			int randSplit = rand.nextInt(numWords) + 1;		// always at least include first word, can split on last word
 			HashMap<Integer, String> newSentence = new HashMap<Integer, String>();
 			for (int j = 0; j < randSplit; ++ j) {
 				newSentence.put(j, origSentence.get(j));
