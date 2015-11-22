@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Random;
+import java.io.OutputStreamWriter;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 
 
 public class Reader {
@@ -46,6 +49,7 @@ public class Reader {
 				if (currentLine.equals("")) {
 					sentenceIndex += 1;
 					wordIndex = 0;
+					continue;	// don't add empty line
 				}
 
 				// create sentence entry for new sentence
@@ -79,10 +83,10 @@ public class Reader {
 		HashMap<Integer, HashMap<Integer, String>> splitData = new HashMap<Integer, HashMap<Integer, String>>();
 
 		int numExamples = data.size();
-		Random rand;
+		Random rand = new Random();
 
 		// bootstrap numExamples
-		for (int i = 0; i < numExamples*baggingMultiplier; ++i) {
+		for (int i = 0; i < numExamples*bootstrapMultiplier; ++i) {
 			int randSentenceIndex = rand.nextInt(numExamples);
 			HashMap<Integer, String> origSentence = data.get(randSentenceIndex);
 
@@ -91,7 +95,11 @@ public class Reader {
 
 			// for new data, choose random part of sentence to split on and copy all data up until split
 			int numWords = origSentence.size();
-			int randSplit = rand.nextInt(numWords) + 1;		// always at least include first word, can split on last word
+
+			int randSplit = 1;
+			if (numWords > 1) {
+				randSplit = rand.nextInt(numWords-1) + 1;		// always at least include first word, don't include last word
+			}
 			HashMap<Integer, String> newSentence = new HashMap<Integer, String>();
 			for (int j = 0; j < randSplit; ++ j) {
 				newSentence.put(j, origSentence.get(j));
@@ -99,12 +107,11 @@ public class Reader {
 			splitData.put(i, newSentence);
 		}
 
-		// write reg data to file
-		try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-              	new FileOutputStream(regDataFilename), "utf-8"))) {
 
+
+		try( PrintWriter writer = new PrintWriter(regDataFilename, "UTF-8") ){
 			// loop over all new sentences
-			for (int i = 0; i < numExamples*baggingMultiplier; ++i) {
+			for (int i = 0; i < numExamples*bootstrapMultiplier; ++i) {
 				HashMap<Integer, String> sentence = regData.get(i);
 				int numWords = sentence.size();
 
@@ -114,16 +121,55 @@ public class Reader {
 					writer.write("\n");
 				}
 				// write empty line after each sentence
-   				writer.write("\n");
-   			}
-		}
+				writer.write("\n");
+			}
+			writer.close();
+		} catch (IOException ex) {}
 
-		// write split data to file
-		try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-      			new FileOutputStream(splitDataFilename), "utf-8"))) {
+
+
+		// // write reg data to file
+		// try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+  //             	new FileOutputStream(regDataFilename), "utf-8"))) {
+
+		// 	// loop over all new sentences
+		// 	for (int i = 0; i < numExamples*bootstrapMultiplier; ++i) {
+		// 		HashMap<Integer, String> sentence = regData.get(i);
+		// 		int numWords = sentence.size();
+
+		// 		// write each line to file
+		// 		for (int j = 0; j < numWords; ++ j) {
+		// 			writer.write(sentence.get(j));
+		// 			writer.write("\n");
+		// 		}
+		// 		// write empty line after each sentence
+  //  				writer.write("\n");
+  //  			}
+		// }
+
+		// // write split data to file
+		// try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+  //     			new FileOutputStream(splitDataFilename), "utf-8"))) {
 	
+		// 	// loop over all new sentences
+		// 	for (int i = 0; i < numExamples*bootstrapMultiplier; ++i) {
+		// 		HashMap<Integer, String> sentence = splitData.get(i);
+		// 		int numWords = sentence.size();
+
+		// 		// write each line to file
+		// 		for (int j = 0; j < numWords; ++ j) {
+		// 			writer.write(sentence.get(j));
+		// 			writer.write("\n");
+		// 		}
+		// 		// write empty line after each sentence
+  //  				writer.write("\n");
+  //  			}
+		// }
+
+
+		try( PrintWriter writer = new PrintWriter(splitDataFilename, "UTF-8") ){
 			// loop over all new sentences
-			for (int i = 0; i < numExamples*baggingMultiplier; ++i) {
+			for (int i = 0; i < numExamples*bootstrapMultiplier; ++i) {
 				HashMap<Integer, String> sentence = splitData.get(i);
 				int numWords = sentence.size();
 
@@ -132,8 +178,12 @@ public class Reader {
 					writer.write(sentence.get(j));
 					writer.write("\n");
 				}
-				// write empty line after each sentence
-   				writer.write("\n");
-   			}
-		}
+				// write punctuation and empty line after each sentence
+				writer.write(". . O\n");
+				writer.write("\n");
+			}
+			writer.close();
+		} catch (IOException ex) {}
+
 	}
+}
