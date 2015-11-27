@@ -9,6 +9,7 @@ import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.aliasi.chunk.CharLmHmmChunker;
 import com.aliasi.chunk.CharLmRescoringChunker;
 import com.aliasi.chunk.Chunk;
 import com.aliasi.chunk.Chunker;
@@ -43,6 +44,25 @@ public class HmmPharseChunker {
 		AbstractExternalizable.compileTo(chunkerEstimator,modelFile);
 	}
 
+	static void printChunk(RescoringChunker<CharLmRescoringChunker> chunker, String line){
+		Chunking it = chunker.chunk(line);
+        
+        System.out.println(line);
+                
+        Set<Chunk> pharses = it.chunkSet();
+        Iterator<Chunk> iterator = pharses.iterator();
+        
+        while (iterator.hasNext()){
+        	Chunk chunk = iterator.next();
+        	int start = chunk.start();
+            int end = chunk.end();
+            String phrase = line.substring(start,end);
+            
+            System.out.println(phrase);
+        }
+        System.out.println("");
+	}    
+	
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		String modelFilename = "Conll-train"; //name the model
 		String trainFilename = args[0]; //the train file location
@@ -52,7 +72,7 @@ public class HmmPharseChunker {
 		File modelFile = new File(modelFilename); //creating the model 
 		System.out.println("Training HMM Chunker on data from: " + trainFilename);
 		trainHMMChunker(modelFilename, trainFilename);
-		System.out.println("Output written to : " + modelFilename);
+		System.out.println("Output model written to : " + modelFilename);
 		
 		@SuppressWarnings("unchecked")
 		RescoringChunker<CharLmRescoringChunker> chunker 
@@ -60,7 +80,7 @@ public class HmmPharseChunker {
 		String line = "";
 		
 		PrintWriter writer = new PrintWriter(outputFilename, "UTF-8");
-		System.out.println(testFilename);
+		System.out.println("Testing data from: " + testFilename);
 		
 		try (BufferedReader br = new BufferedReader(new FileReader(testFilename))) {
 		    while ((line = br.readLine()) != null) {
@@ -68,6 +88,8 @@ public class HmmPharseChunker {
 		        
 		        Set<Chunk> pharses = it.chunkSet();//the set of all phrases
 		        Iterator<Chunk> iterator = pharses.iterator();// helper to help iterating the set
+		        
+		        //printChunk(chunker,line); //This is for printing the complete chunk 
 		        
 		        while (iterator.hasNext()){
 		        	Chunk chunk = iterator.next();
