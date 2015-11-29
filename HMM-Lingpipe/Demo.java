@@ -23,7 +23,7 @@ import com.aliasi.tokenizer.TokenizerFactory;
 import com.aliasi.util.AbstractExternalizable;
 import com.aliasi.util.Strings;
 
-public class HmmPharseChunker {
+public class Demo {
 
 	static void trainHMMChunker(String modelFilename, String trainFilename) throws IOException{
 		File modelFile = new File(modelFilename);
@@ -47,8 +47,7 @@ public class HmmPharseChunker {
 	static void printChunk(RescoringChunker<CharLmRescoringChunker> chunker, String line){
 		Chunking it = chunker.chunk(line);
         
-        System.out.println(line);
-                
+        
         Set<Chunk> pharses = it.chunkSet();
         Iterator<Chunk> iterator = pharses.iterator();
         
@@ -66,8 +65,6 @@ public class HmmPharseChunker {
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		String modelFilename = "Conll-train"; //name the model
 		String trainFilename = args[0]; //the train file location
-		String testFilename = args[1]; //the location of the testing 
-		String outputFilename = "SpTrSpTe.txt";// the name of the output file result
 		
 		File modelFile = new File(modelFilename); //creating the model 
 		System.out.println("Training HMM Chunker on data from: " + trainFilename);
@@ -79,40 +76,23 @@ public class HmmPharseChunker {
 			= (RescoringChunker<CharLmRescoringChunker>) AbstractExternalizable.readObject(modelFile);
 		String line = "";
 		
-		PrintWriter writer = new PrintWriter(outputFilename, "UTF-8");
-		System.out.println("Testing data from: " + testFilename);
-		
-		try (BufferedReader br = new BufferedReader(new FileReader(testFilename))) {
-		    while ((line = br.readLine()) != null) {
-		        Chunking it = chunker.chunk(line);
+		InputStreamReader isReader = new InputStreamReader(System.in);
+        BufferedReader bufReader = new BufferedReader(isReader);
+        while (true) {
+            System.out.print("\n\nINPUT> ");
+            System.out.flush();
+            line = bufReader.readLine();
+            if (line == null || line.length() < 1 
+                || line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit"))
+                break;
+            
+		    Chunking it = chunker.chunk(line);
 		        
-		        Set<Chunk> pharses = it.chunkSet();//the set of all phrases
-		        Iterator<Chunk> iterator = pharses.iterator();// helper to help iterating the set
+		    Set<Chunk> pharses = it.chunkSet();//the set of all phrases
+		    Iterator<Chunk> iterator = pharses.iterator();// helper to help iterating the set
+		    printChunk(chunker,line); //This is for printing the complete chunk 
 		        
-		        //printChunk(chunker,line); //This is for printing the complete chunk 
-		        
-		        while (iterator.hasNext()){
-		        	Chunk chunk = iterator.next();
-		        	int start = chunk.start();
-		            int end = chunk.end();
-		            String phrase = line.substring(start,end);
-		            
-		            String [] wordInPharse = phrase.split(" ");
-		            for (int i = 0; i < wordInPharse.length; i++){
-		            	if (i == 0){
-		            		System.out.println(wordInPharse[i] + " B-" + chunk.type());
-		        			writer.println(wordInPharse[i] + " B-" + chunk.type());
-		            	}else{
-		            		System.out.println(wordInPharse[i] + " I-" + chunk.type());
-		        			writer.println(wordInPharse[i] + " I-" + chunk.type());
-		            	}
-		            }
-		        }
-		        System.out.println("");
-		        writer.println("");
-		    }
-		    writer.close();
-		}
+	    }
 			
 	}
 } 
