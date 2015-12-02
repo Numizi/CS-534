@@ -7,7 +7,7 @@ public class Main {
 		String filename = args[0];
 		String regFilename = args[1];
 		String splitFilename = args[2];
-		int bootstrapMultiplier = Integer.parseInt(args[3]);
+		double bootstrapMultiplier = Double.parseDouble(args[3]);
 		
 		Reader reader = new Reader(filename);
 		reader.createData(regFilename, splitFilename, bootstrapMultiplier);

@@ -76,7 +76,7 @@ public class Reader {
 	
 	/**
 	 */
-	public void createData(String regDataFilename, String splitDataFilename, int bootstrapMultiplier) {
+	public void createData(String regDataFilename, String splitDataFilename, double bootstrapMultiplier) {
 
 		// maps from sentence number to line number to data
 		HashMap<Integer, HashMap<Integer, String>> regData = new HashMap<Integer, HashMap<Integer, String>>();
@@ -86,7 +86,7 @@ public class Reader {
 		Random rand = new Random();
 
 		// bootstrap numExamples
-		for (int i = 0; i < numExamples*bootstrapMultiplier; ++i) {
+		for (int i = 0; i < Math.round(numExamples*bootstrapMultiplier); ++i) {
 			int randSentenceIndex = rand.nextInt(numExamples);
 			HashMap<Integer, String> origSentence = data.get(randSentenceIndex);
 
@@ -111,7 +111,7 @@ public class Reader {
 
 		try( PrintWriter writer = new PrintWriter(regDataFilename, "UTF-8") ){
 			// loop over all new sentences
-			for (int i = 0; i < numExamples*bootstrapMultiplier; ++i) {
+			for (int i = 0; i < Math.round(numExamples*bootstrapMultiplier); ++i) {
 				HashMap<Integer, String> sentence = regData.get(i);
 				int numWords = sentence.size();
 
@@ -169,7 +169,7 @@ public class Reader {
 
 		try( PrintWriter writer = new PrintWriter(splitDataFilename, "UTF-8") ){
 			// loop over all new sentences
-			for (int i = 0; i < numExamples*bootstrapMultiplier; ++i) {
+			for (int i = 0; i < Math.round(numExamples*bootstrapMultiplier); ++i) {
 				HashMap<Integer, String> sentence = splitData.get(i);
 				int numWords = sentence.size();
 
