@@ -1,5 +1,21 @@
+CS-534 project by Duy Nguyen, Christopher Eriksen, and Wu Ga
+
 results.ods and results_vary_training_size.ods contain raw results from tests
-=============================================================================
+=================================================================================================================================
+
+Generate Bootsrapped Training and Testing Data
+----------------------------------------------
+
+Use code in CS-534/reader to produce data by bootstrapping original training or testing data from CoNLL 2000 (contained in 
+CS-534/data)
+To generate data, modify CS-534/reader/readerExample.sh to contain original filename to bootstrap from, filename for new file
+containing bootsstrapped examples of complete sentences, filename for new file containing bootsstrapped examples of in complete 
+sentences, and bootstrap multiplier (some real number)
+Then run readerExample.sh using ./readerExample.sh
+
+
+=================================================================================================================================
+
 
 YamCha (SVM) directions
 -----------------------
