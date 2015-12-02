@@ -1,6 +1,9 @@
+#! /usr/bin/python
+import sys
+
 def main():
-	infile = ""
-	outfile = ""
+	infile = "test_split_5.txt"
+	outfile = "test_split_5_out.txt"
 
 	# grab lines, splitting on whitespace
 	lines = [line.split() for line in open(infile)]

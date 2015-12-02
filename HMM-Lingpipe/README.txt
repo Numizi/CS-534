@@ -1,7 +1,9 @@
+Install lingpipe
+1. Download: http://alias-i.com/lingpipe/web/download.html
+2. Set up eclipse for lingpipe: http://alias-i.com/lingpipe/demos/tutorial/eclipse/read-me.html
+
 # How to run Demo.java
-1.install lingpipe
-2.the first args is the path of the training data
-3.run it
+1.the first argument is the path of the training data
 
 # How to use HmmPhraseChunker.java
 Phrase Chunker using lingpipe and the CoNLL data set

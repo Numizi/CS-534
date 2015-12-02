@@ -1,11 +1,13 @@
 #! /usr/bin/python
 import sys
 import numpy as np 
+from os import listdir
+from os.path import isfile, join
 
-def evaluate():
-	infileG = "test_split_5.txt"#the actual data
-	infileP = "SpTrSpTe.txt"#the prediicted data
-	outfile = "SpTrSpTe_result.txt"#combine them together so they have the format ('words','type','B or I of actual data','B or I of predicted data' )
+def evaluate(infileG,infileP, outfile):
+	#infileG = "test_split_5.txt"#the actual data
+	#infileP = "SpTrSpTe.txt"#the prediicted data
+	#outfile = "SpTrSpTe_result.txt"#combine them together so they have the format ('words','type','B or I of actual data','B or I of predicted data' )
 
 	linesG = np.loadtxt(infileG, dtype= 'S', delimiter=' ')
 	linesP = np.loadtxt(infileP, dtype= 'S', delimiter=' ')
@@ -73,4 +75,10 @@ def evaluate():
 	np.savetxt(outfile, result, fmt = '%.100s', delimiter=' ', newline='\n')		
 
 if __name__ == '__main__':
-	evaluate()
+	mypath = "outfile"
+	for f in listdir(mypath):
+		print mypath + "/" + f
+		infileP = mypath + "/" + f
+		infileG = "test_split_5.txt"
+		outfile = "result/" + str(f)
+		evaluate (infileG,infileP,outfile)  
