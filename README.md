@@ -1,5 +1,9 @@
 CS-534 project by Duy Nguyen, Christopher Eriksen, and Wu Ga
 
+Paper
+===
+[Read](https://github.com/Numizi/CS-534/blob/master/real-time-chunking.pdf)
+
 results.ods and results_vary_training_size.ods contain raw results from tests
 =================================================================================================================================
 
